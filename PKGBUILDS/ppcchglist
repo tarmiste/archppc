@@ -1,0 +1,10 @@
+core/binutils/PKGBUILD
+core/filesystem/PKGBUILD
+core/filesystem/os-release
+core/gcc/PKGBUILD
+core/glibc/PKGBUILD
+core/libtool/PKGBUILD
+core/openssl/PKGBUILD
+core/pacman/PKGBUILD
+core/pacman/makepkg.conf
+core/pacman-mirrorlist/mirrorlist

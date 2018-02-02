@@ -1,0 +1,90 @@
+# $Id$
+# Maintainer: Pierre Schmitz <pierre@archlinux.de>
+
+# ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
+#  - set ARM architecture targets
+# Oleg Rakhmanov <oleg@archlinuxarm.org>
+#  - cryptodev enabled version   
+
+buildarch=6
+
+pkgname=openssl-cryptodev
+_pkgname=openssl
+_ver=1.1.0f
+# use a pacman compatible version scheme
+pkgver=${_ver/[a-z]/.${_ver//[0-9.]/}}
+#pkgver=$_ver
+pkgrel=2
+pkgdesc='The Open Source toolkit for Secure Sockets Layer and Transport Layer Security'
+arch=('arm' 'armv7h')
+url='https://www.openssl.org'
+license=('custom:BSD')
+depends=('perl')
+optdepends=('ca-certificates')
+backup=('etc/ssl/openssl.cnf')
+conflicts=('openssl')
+provides=("openssl=${pkgver}")
+_cryptodevver=1.9
+
+source=("https://www.openssl.org/source/${_pkgname}-${_ver}.tar.gz"
+        'ca-dir.patch'
+        'fs54205.patch'
+        "https://github.com/cryptodev-linux/cryptodev-linux/archive/cryptodev-linux-${_cryptodevver}.tar.gz")
+md5sums=('7b521dea79ab159e8ec879d2333369fa'
+         '02b53865fb70faef763e262b4971aa4b'
+         '2f1b34d666894f447241c60191e9cfda'
+         'e5aacd2293cea9c94f71ca2e0b4dea57')
+
+prepare() {
+	cd "$srcdir/$_pkgname-$_ver"
+
+	# set ca dir to /etc/ssl by default
+	patch -p0 -i "$srcdir/ca-dir.patch"
+
+	patch -Np1 -i "$srcdir/fs54205.patch"
+	# Copy the header file
+	cp -u ${srcdir}/cryptodev-linux-cryptodev-linux-${_cryptodevver}/crypto/cryptodev.h ${srcdir}/openssl-${_ver}/crypto/
+}
+
+build() {
+	cd "$srcdir/$_pkgname-$_ver"
+
+	if [ "${CARCH}" == 'x86_64' ]; then
+		openssltarget='linux-x86_64'
+		optflags='enable-ec_nistp_64_gcc_128'
+	elif [ "${CARCH}" == 'i686' ]; then
+		openssltarget='linux-elf'
+		optflags=''
+	elif [ "${CARCH}" == 'arm' -o "${CARCH}" == 'armv6h' -o "${CARCH}" == 'armv7h' ]; then
+		openssltarget='linux-armv4'
+		optflags=''
+	elif [ "${CARCH}" == 'aarch64' ]; then
+		openssltarget='linux-aarch64'
+		optflags='no-afalgeng'
+	fi
+
+	# mark stack as non-executable: http://bugs.archlinux.org/task/12434
+	./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \
+		-DHAVE_CRYPTODEV -DHASH_MAX_LEN=64 \
+		shared no-ssl3-method ${optflags} \
+		"${openssltarget}" \
+		"-Wa,--noexecstack ${CPPFLAGS} ${CFLAGS} ${LDFLAGS}"
+
+	make depend
+	make
+}
+
+check() {
+	cd "$srcdir/$_pkgname-$_ver"
+	# the test fails due to missing write permissions in /etc/ssl
+	# revert this patch for make test
+	patch -p0 -R -i "$srcdir/ca-dir.patch"
+	make test
+	patch -p0 -i "$srcdir/ca-dir.patch"
+}
+
+package() {
+	cd "$srcdir/$_pkgname-$_ver"
+	make DESTDIR=$pkgdir MANDIR=/usr/share/man MANSUFFIX=ssl install_sw install_ssldirs install_man_docs
+	install -D -m644 LICENSE $pkgdir/usr/share/licenses/$_pkgname/LICENSE
+}

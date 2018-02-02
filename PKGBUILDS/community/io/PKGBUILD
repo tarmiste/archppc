@@ -1,0 +1,41 @@
+# $Id$
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Gergely Imreh <imrehg@gmail.com>
+
+# ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
+#  - remove -msse2
+
+pkgname=io
+pkgver=2017.06.08
+pkgrel=1
+pkgdesc='IO programming language'
+arch=('x86_64' 'i686')
+url='http://iolanguage.com/'
+license=('BSD')
+depends=('pcre' 'libsndfile' 'libxmu' 'freetype2' 'libedit' 'libxml2' 'libtiff' 'libevent' 'yajl' 'libmariadbclient' 'lzo' 'libpng' 'python2' 'util-linux' 'freeglut' 'libjpeg-turbo' 'libtheora' 'python')
+makedepends=('cmake' 'git')
+options=('!makeflags' '!buildflags')
+source=("git+https://github.com/stevedekorte/io#commit=5fffec7cbe9679632ff793befacedd92f79d7f0f"
+        '0001-remove-msse2.patch')
+sha256sums=('SKIP'
+            '3b34ae67b11c64c9633a70506551e8021fedb17c91eb3f9f5e4c8e78711708a3')
+
+prepare() {
+  sed -i "s:20151111:${pkgver//./}:" io/libs/iovm/source/IoVersion.h
+  cd io
+  git apply ../0001-remove-msse2.patch
+}
+
+build() {
+  mkdir -p build
+  cd build
+  cmake ../io -DCMAKE_INSTALL_PREFIX=/usr
+}
+
+package() {
+  DESTDIR="$pkgdir" make -C build install
+  install -Dm644 io/license/bsd_license.txt \
+    "$pkgdir/usr/share/licenses/$pkgname/bsd_license.txt"
+}
+
+# vim: ts=2 sw=2 et:

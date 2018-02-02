@@ -1,0 +1,12 @@
+diff -urN a/lib/AnyEvent/Handle.pm b/lib/AnyEvent/Handle.pm
+--- a/lib/AnyEvent/Handle.pm	2016-01-07 10:01:45.000000000 +0000
++++ b/lib/AnyEvent/Handle.pm	2017-04-27 01:33:17.600679762 +0000
+@@ -2130,7 +2130,7 @@
+    }
+ 
+    $self->{_on_starttls}
+-      and Net::SSLeay::state ($self->{tls}) == Net::SSLeay::ST_OK ()
++      and Net::SSLeay::state ($self->{tls}) == 1
+       and (delete $self->{_on_starttls})->($self, 1, "TLS/SSL connection established");
+ }
+ 

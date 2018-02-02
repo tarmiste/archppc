@@ -1,0 +1,89 @@
+#
+# Arch Linux ARM repository mirrorlist
+# Generated on 2017-12-01
+#
+# This file is a stub and exists merely to satisfy dependencies
+# Do not enable any of the following.   There are no mirrors.  
+
+## Geo-IP based mirror selection and load balancing
+#Server = http://mirror.archlinuxppc.org/$arch/$repo
+
+### Mirrors by country
+
+### Australia (not Austria!)
+## Sydney
+# Server = http://au.mirror.archlinuxppc.org/$arch/$repo
+
+### Brazil
+## Sao Paulo
+# Server = http://br2.mirror.archlinuxppc.org/$arch/$repo
+
+### Finland
+## Tampere
+# Server = http://fi.mirror.archlinuxppc.org/$arch/$repo
+
+### France
+## Ain
+# Server = http://fr.mirror.archlinuxppc.org/$arch/$repo
+
+### Germany
+## Aachen
+# Server = http://de3.mirror.archlinuxppc.org/$arch/$repo
+## Berlin
+# Server = http://de.mirror.archlinuxppc.org/$arch/$repo
+## Coburg
+# Server = http://de4.mirror.archlinuxppc.org/$arch/$repo
+## Falkenstein
+# Server = http://de5.mirror.archlinuxppc.org/$arch/$repo
+# Server = http://de6.mirror.archlinuxppc.org/$arch/$repo
+## Nuremberg
+# Server = http://eu.mirror.archlinuxppc.org/$arch/$repo
+
+### Greece
+## Athens
+# Server = http://gr.mirror.archlinuxppc.org/$arch/$repo
+
+### Hungary
+## Budapest
+# Server = http://hu.mirror.archlinuxppc.org/$arch/$repo
+
+### Italy
+## Turin
+# Server = http://it.mirror.archlinuxppc.org/$arch/$repo
+
+### Netherlands
+## Amsterdam
+# Server = http://nl.mirror.archlinuxppc.org/$arch/$repo
+
+### Russia
+## Moscow
+# Server = http://ru.mirror.archlinuxppc.org/$arch/$repo
+
+### Singapore
+# Server = http://sg.mirror.archlinuxppc.org/$arch/$repo
+
+### South Africa
+## Johannesburg
+# Server = https://za.mirror.archlinuxppc.org/$arch/$repo
+
+### Taiwan
+## New Taipei City
+# Server = http://tw.mirror.archlinuxppc.org/$arch/$repo
+
+### United States
+## California
+# Server = http://ca.us.mirror.archlinuxppc.org/$arch/$repo
+## Colorado
+# Server = http://co.us.mirror.archlinuxppc.org/$arch/$repo
+## Delaware
+# Server = http://de.us.mirror.archlinuxppc.org/$arch/$repo
+## Florida
+# Server = http://fl.us.mirror.archlinuxppc.org/$arch/$repo
+## Illinois
+# Server = http://il.us.mirror.archlinuxppc.org/$arch/$repo
+## Michigan
+# Server = http://mi.us.mirror.archlinuxppc.org/$arch/$repo
+
+### Vietnam
+## Da Nang
+# Server = http://vn.mirror.archlinuxppc.org/$arch/$repo

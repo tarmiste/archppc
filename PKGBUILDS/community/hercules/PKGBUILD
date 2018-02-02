@@ -1,0 +1,41 @@
+# $Id$
+# Maintainer: Alexander F Rødseth <xyproto@archlinux.org>
+# Contributor: Kevin Piche <kevin@archlinux.org>
+# Contributor: Jaroslav Lichtblau <svetlemodry@archlinux.org>
+# Contributor: Tom Newsom <Jeepster@gmx.co.uk>
+
+# ALARM::Kevin Mihelich <kevin@archlinuxarm.org>
+#  - remove bad mcpu/mtune from configure for ARM
+
+pkgname=hercules
+pkgver=3.13.00
+pkgrel=1
+pkgdesc='Software implementation of System/370 and ESA/390'
+arch=('x86_64')
+url='http://www.hercules-390.eu/'
+license=('custom')
+options=('!makeflags')
+source=("http://downloads.hercules-390.eu/$pkgname-${pkgver%.00}.tar.gz")
+sha256sums=('890c57c558d58708e55828ae299245bd2763318acf53e456a48aac883ecfe67d')
+
+prepare() {
+  ln -sf "$pkgname-${pkgver%.00}" p
+  # Change module extension from .la to .so.
+  sed '/HDL_MODULE_SUFFIX/ s/\.la/.so/' -i p/hdl.h
+  sed 's/-mcpu=$host_cpu -mtune=$host_cpu//' -i p/configure
+}
+
+build() {
+  cd p
+  ./configure --prefix=/usr --enable-optimization=-O3
+  make
+}
+
+package() {
+  cd p
+  DESTDIR="$pkgdir" make install
+  install -Dm644 COPYRIGHT "$pkgdir/usr/share/licenses/hercules/qpl1"
+}
+
+# vim: ts=2 sw=2 et:
+# getver: raw.githubusercontent.com/rbowler/spinhawk/master/makemsi/Hercules-W64.VER
