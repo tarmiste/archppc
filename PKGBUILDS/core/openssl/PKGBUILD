@@ -48,6 +48,10 @@ build() {
 		openssltarget='linux-aarch64'
 		optflags='no-afalgeng'
 	fi
+# XXX hard code for now but needs fixing
+		openssltarget='linux-ppc64'
+		optflags='no-afalgeng'
+
 
 	# mark stack as non-executable: http://bugs.archlinux.org/task/12434
 	./Configure --prefix=/usr --openssldir=/etc/ssl --libdir=lib \

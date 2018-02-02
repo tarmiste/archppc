@@ -41,7 +41,7 @@ prepare() {
   sed -i "/ac_cpp=/s/\$CPPFLAGS/\$CPPFLAGS -O2/" libiberty/configure
 
   # https://bugs.archlinux.org/task/55741
-  git apply ../0001-x86-64_Dont_pass_output_bfd_to_info-callbacks-minfo.patch
+  #git apply ../0001-x86-64_Dont_pass_output_bfd_to_info-callbacks-minfo.patch
 }
 
 build() {
@@ -56,7 +56,7 @@ build() {
   "$srcdir/binutils-$pkgver/configure" \
     --prefix=/usr \
     --with-lib-path=/usr/lib:/usr/local/lib \
-    --with-bugurl=https://github.com/archlinuxarm/PKGBUILDs/issues \
+    --with-bugurl=https://github.com/archlinuxppc/PKGBUILDs/issues \
     --enable-threads \
     --enable-shared \
     --enable-ld=default \

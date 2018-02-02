@@ -1,9 +1,12 @@
 # $Id$
-# Maintainer: Sébastien Luttringer
-# Contributor: Tom Gundersen <teg@jklm.no>
+# Maintainer: 
+# Contributor: 
 
 # ALARM: Kevin Mihelich <kevin@archlinuxarm.org>
 #  - modifed os-release
+
+# ppc: TA 
+# G5: Tom Armistead WIP
 
 pkgname=filesystem
 pkgver=2017.10
@@ -101,6 +104,14 @@ package() {
     ln -s usr/lib lib64
     ln -s lib usr/lib64
   }
+
+  # add lib symlinks powerpc
+  # For now, always make /lib64 since this is only for G5s.
+  # ln -s usr/lib lib
+  # [[ $CARCH = 'ppc64' ]] && {
+    ln -s usr/lib lib64
+    ln -s lib usr/lib64
+  # }
 
   # add bin symlinks
   ln -s usr/bin bin

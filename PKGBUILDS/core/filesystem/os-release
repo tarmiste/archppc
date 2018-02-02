@@ -1,9 +1,9 @@
-NAME="Arch Linux ARM"
-ID=archarm
+NAME="Arch Linux PowerPC G5"
+ID=archppc
 ID_LIKE=arch
-PRETTY_NAME="Arch Linux ARM"
+PRETTY_NAME="Arch Linux PowerPC G5"
 ANSI_COLOR="0;36"
-HOME_URL="http://archlinuxarm.org/"
-SUPPORT_URL="https://archlinuxarm.org/forum"
-BUG_REPORT_URL="https://github.com/archlinuxarm/PKGBUILDs/issues"
+HOME_URL="http://archlinuxg5.org/"
+SUPPORT_URL="https://archlinuxg5.org/forum"
+BUG_REPORT_URL="https://github.com/archlinuxg5/PKGBUILDs/issues"
 

@@ -9,6 +9,8 @@
 #  - makepkg.conf: adjusted C/CXX/LDFLAGS, drop -z,now for armv5
 #  - patch to sync filesystem after install/remove
 #  - reverts to allow scriplet input on stdin
+#
+# ppc: TA
 
 pkgname=pacman
 pkgver=5.0.2
@@ -56,8 +58,8 @@ build() {
   cd "$pkgname-$pkgver"
 
   ./configure --prefix=/usr --sysconfdir=/etc \
-    --localstatedir=/var --enable-doc \
     --with-scriptlet-shell=/usr/bin/bash \
+    --localstatedir=/var --disable-doc \
     --with-ldconfig=/usr/bin/ldconfig
   make
   make -C contrib
@@ -78,27 +80,22 @@ package() {
   install -m644 "$srcdir/pacman.conf" "$pkgdir/etc/pacman.conf"
 
   case $CARCH in
-    arm)
-      mycarch="arm"
-      mychost="armv5tel-unknown-linux-gnueabi"
-      myflags="-march=armv5te "
+    ppc)
+      mycarch="ppc"
+      mychost="powerpc-unknown-linux-gnu"
+      myflags="-mcpu=powerpc "
       ;;
-    armv6h)
-      mycarch="armv6h"
-      mychost="armv6l-unknown-linux-gnueabihf"
-      myflags="-march=armv6 -mfloat-abi=hard -mfpu=vfp "
-      ;;
-    armv7h)
-      mycarch="armv7h"
-      mychost="armv7l-unknown-linux-gnueabihf"
-      myflags="-march=armv7-a -mfloat-abi=hard -mfpu=vfpv3-d16 "
-      ;;
-    aarch64)
-      mycarch="aarch64"
-      mychost="aarch64-unknown-linux-gnu"
-      myflags="-march=armv8-a "
+    ppc64)
+      mycarch="ppc64"
+      mychost="powerpc64-unknown-linux-gnu"
+      myflags="-mcpu=powerpc64 "
       ;;
   esac
+
+# Hardcode for now.   XXX Fix me
+      mycarch="ppc64"
+      mychost="powerpc64-unknown-linux-gnu"
+      myflags="-mcpu=powerpc64 "
 
   # set things correctly in the default conf file
   install -m644 "$srcdir/makepkg.conf" "$pkgdir/etc"

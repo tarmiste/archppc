@@ -1,6 +1,6 @@
 # $Id$
-# Maintainer:  Bartłomiej Piotrowski <bpiotrowski@archlinux.org>
-# Contributor: Allan McRae <allan@archlinux.org>
+# Maintainer:  
+# Contributor: 
 
 # toolchain build order: linux-api-headers->glibc->binutils->gcc->binutils->glibc
 # NOTE: valgrind requires rebuilt with each major glibc version
@@ -10,22 +10,24 @@
 #  - Disabled distcc
 #  - Strip out Arch x86 multilib
 
+# ppc: TA 
+# G5: Tom Armistead, WIP
+
 noautobuild=1
 
 pkgname=glibc
-pkgver=2.26
-pkgrel=11
-arch=(x86_64)
+pkgver=2.27
+pkgrel=1
+arch=('ppc64' 'x86_64')
 url='http://www.gnu.org/software/libc'
 license=(GPL LGPL)
-makedepends=(git gd)
+makedepends=(gd)
 options=(!strip staticlibs !distcc)
-_commit=de51f431ed6226ec68ca76e578f2cbd55b6262cb
-source=(git://sourceware.org/git/glibc.git#commit=${_commit}
+source=(http://ftp.gnu.org/gnu/glibc/${pkgname}-${pkgver}.tar.xz
         locale.gen.txt
         locale-gen
         bz20338.patch)
-md5sums=('SKIP'
+md5sums=('898cd5656519ffbc3a03fe811dd89e82'
          '07ac979b6ab5eeb778d55f041529d623'
          '476e9113489f93b348b21e144b6a8fcf'
          'dc0d3ad59aeaaf591b085a77de6e03e9')
@@ -33,31 +35,33 @@ md5sums=('SKIP'
 prepare() {
   mkdir -p glibc-build
 
-  cd glibc
+  cd glibc-2.27
 
-  local i; for i in ${source[@]}; do
-    case ${i%::*} in
-      *.patch)
-        msg2 "Applying ${i}"
-        patch -p1 -i "$srcdir/${i}"
-        ;;
-    esac
-  done
+  #local i; for i in ${source[@]}; do
+  #  case ${i%::*} in
+  #    *.patch)
+  #      msg2 "Applying ${i}"
+  #      patch -p1 -i "$srcdir/${i}"
+  #      ;;
+  #  esac
+  #done
 }
 
+#
+# PPC disable:
+#      --enable-stack-protector=strong
+#      --enable-stackguard-randomization
 build() {
   local _configure_flags=(
       --prefix=/usr
       --with-headers=/usr/include
-      --with-bugurl=https://github.com/archlinuxarm/PKGBUILDs/issues
+      --with-bugurl=https://github.com/archlinuxg5/PKGBUILDs/issues
       --enable-add-ons
       --enable-bind-now
       --enable-lock-elision
       --disable-multi-arch
       --enable-obsolete-nsl
       --enable-obsolete-rpc
-      --enable-stack-protector=strong
-      --enable-stackguard-randomization
       --disable-profile
       --disable-werror
   )
@@ -65,10 +69,7 @@ build() {
   cd "$srcdir/glibc-build"
 
   # ALARM: Specify build host types
-  [[ $CARCH == "arm" ]] && CONFIGFLAG="--host=armv5tel-unknown-linux-gnueabi --build=armv5tel-unknown-linux-gnueabi"
-  [[ $CARCH == "armv6h" ]] && CONFIGFLAG="--host=armv6l-unknown-linux-gnueabihf --build=armv6l-unknown-linux-gnueabihf"
-  [[ $CARCH == "armv7h" ]] && CONFIGFLAG="--host=armv7l-unknown-linux-gnueabihf --build=armv7l-unknown-linux-gnueabihf"
-  [[ $CARCH == "aarch64" ]] && CONFIGFLAG="--host=aarch64-unknown-linux-gnu --build=aarch64-unknown-linux-gnu"
+  # Removed
 
   echo "slibdir=/usr/lib" >> configparms
   echo "rtlddir=/usr/lib" >> configparms
@@ -78,7 +79,7 @@ build() {
   # remove fortify for building libraries
   CPPFLAGS=${CPPFLAGS/-D_FORTIFY_SOURCE=2/}
 
-  "$srcdir/glibc/configure" \
+  "$srcdir/glibc-2.27/configure" \
       --libdir=/usr/lib \
       --libexecdir=/usr/lib \
       ${_configure_flags[@]} \
@@ -122,7 +123,7 @@ package() {
   make -C glibc-build install_root="$pkgdir" install
   rm -f "$pkgdir"/etc/ld.so.{cache,conf}
 
-  cd glibc
+  cd glibc-2.27
 
   install -dm755 "$pkgdir"/usr/lib/{locale,systemd/system,tmpfiles.d}
   install -m644 nscd/nscd.conf "$pkgdir/etc/nscd.conf"
@@ -137,10 +138,10 @@ package() {
   # create /etc/locale.gen
   install -m644 "$srcdir/locale.gen.txt" "$pkgdir/etc/locale.gen"
   sed -e '1,3d' -e 's|/| |g' -e 's|\\| |g' -e 's|^|#|g' \
-    "$srcdir/glibc/localedata/SUPPORTED" >> "$pkgdir/etc/locale.gen"
+    "$srcdir/glibc-2.27/localedata/SUPPORTED" >> "$pkgdir/etc/locale.gen"
 
   # ALARM: symlink ld-linux.so.3 for hard-float
-  [[ $CARCH == "armv6h" || $CARCH == "armv7h" ]] && ln -s /lib/ld-${pkgver}.so ${pkgdir}/usr/lib/ld-linux.so.3
+  # Removed
 
   # Do not strip the following files for improved debugging support
   # ("improved" as in not breaking gdb and valgrind...):
@@ -155,8 +156,13 @@ package() {
                         usr/bin/{pcprofiledump,pldd,rpcgen,sln,sprof} \
                         usr/lib/getconf/*
 
+#why is ieee missing XXX ?
+  #strip $STRIP_STATIC usr/lib/lib{anl,BrokenLocale,c{,_nonshared},crypt}.a \
+#                      usr/lib/lib{dl,g,ieee,mcheck,nsl,pthread{,_nonshared}}.a \
+#                      usr/lib/lib{resolv,rpcsvc,rt,util}.a
+
   strip $STRIP_STATIC usr/lib/lib{anl,BrokenLocale,c{,_nonshared},crypt}.a \
-                      usr/lib/lib{dl,g,ieee,mcheck,nsl,pthread{,_nonshared}}.a \
+                      usr/lib/lib{dl,g,mcheck,nsl,pthread{,_nonshared}}.a \
                       usr/lib/lib{resolv,rpcsvc,rt,util}.a
 
   strip $STRIP_SHARED usr/lib/lib{anl,BrokenLocale,cidn,crypt}-${pkgver}.so \
