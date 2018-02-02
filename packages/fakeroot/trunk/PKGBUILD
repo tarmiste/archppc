@@ -37,8 +37,8 @@ build() {
 
   make
 
-  cd doc
-  po4a -k 0 --rm-backups --variable 'srcdir=../doc/' po4a/po4a.cfg
+  #cd doc
+  #po4a -k 0 --rm-backups --variable 'srcdir=../doc/' po4a/po4a.cfg
 }
 
 check() {

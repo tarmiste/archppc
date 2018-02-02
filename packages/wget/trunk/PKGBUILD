@@ -28,14 +28,17 @@ ca_certificate=/etc/ssl/certs/ca-certificates.crt
 EOF
 }
 
+#
+#
+#    --enable-nls \
+#    --with-ssl=gnutls
 build() {
   cd ${pkgname}-${pkgver}
   ./configure \
     --prefix=/usr \
     --sysconfdir=/etc \
-    --disable-rpath \
-    --enable-nls \
-    --with-ssl=gnutls
+    --with-ssl=openssl \
+    --disable-rpath 
   make
 }
 

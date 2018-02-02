@@ -17,8 +17,9 @@ sha256sums=('9edb930441a7c886dcf545799164e2982dfec56330ec4aaba8ee3c5b40fd7dba'
             '15eb04e757b7c61c8ee1540fd697771b8ae8e31f92cfb39c260b423101e21af8')
 
 build() {
-	asciidoc.py -v -d manpage -b docbook update-ca-trust.8.txt
-	xsltproc --nonet -o update-ca-trust.8 /etc/asciidoc/docbook-xsl/manpage.xsl update-ca-trust.8.xml
+	#asciidoc.py -v -d manpage -b docbook update-ca-trust.8.txt
+	#xsltproc --nonet -o update-ca-trust.8 /etc/asciidoc/docbook-xsl/manpage.xsl update-ca-trust.8.xml
+     echo hi
 }
 
 package_ca-certificates-utils() {
@@ -29,7 +30,7 @@ package_ca-certificates-utils() {
 	replaces=(ca-certificates-java)
 
 	install -D update-ca-trust "$pkgdir/usr/bin/update-ca-trust"
-	install -Dm644 update-ca-trust.8 "$pkgdir/usr/share/man/man8/update-ca-trust.8"
+	#install -Dm644 update-ca-trust.8 "$pkgdir/usr/share/man/man8/update-ca-trust.8"
 	install -Dm644 update-ca-trust.hook "$pkgdir/usr/share/libalpm/hooks/update-ca-trust.hook"
 
 	# Trust source directories

@@ -12,34 +12,33 @@ arch=(x86_64)
 license=(LGPL)
 depends=(awk)
 makedepends=(git)
-_commit=673dce1d61781c32b449bef0ee8711dc7e689170  # tags/0.12.0
-source=("git+https://github.com/libcheck/check#commit=$_commit")
+source=(check-0.12.0.tar.gz)
 md5sums=('SKIP')
 
-pkgver() {
-  cd $pkgname
-  git describe --tags | sed 's/-/+/g'
-}
+#pkgver() {
+#  cd $pkgname
+#  git describe --tags | sed 's/-/+/g'
+#}
 
 prepare() {
-  cd $pkgname
-  autoreconf -fvi
+  cd $pkgname-0.12.0
+  #autoreconf -fvi
 }
 
 build() {
-  cd $pkgname
+  cd $pkgname-0.12.0
   ./configure --prefix=/usr --disable-static
   make
 }
 
 check() {
-  cd $pkgname
+  cd $pkgname-0.12.0
   # Extremely long
   #make -k check
 }
 
 package() {
-  cd $pkgname
+  cd $pkgname-0.12.0
   make DESTDIR="$pkgdir" install
 
   # get rid of the package's info directory
