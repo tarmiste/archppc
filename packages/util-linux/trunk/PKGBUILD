@@ -16,12 +16,7 @@ makedepends=('systemd' 'python' 'libcap-ng')
 license=('GPL2')
 options=('strip' 'debug')
 validpgpkeys=('B0C64D14301CC6EFAEDF60E4E4B71D5EEC39C284')  # Karel Zak
-source=("https://www.kernel.org/pub/linux/utils/util-linux/v$_pkgmajor/$pkgbase-$pkgver.tar."{xz,sign}
-        pam-{login,common,su}
-        'util-linux.sysusers'
-        '60-rfkill.rules'
-        'rfkill-unblock_.service'
-        'rfkill-block_.service')
+source=("https://www.kernel.org/pub/linux/utils/util-linux/v$_pkgmajor/$pkgbase-$pkgver.tar."{xz,sign})
 sha256sums=('1a51b16fa9cd51d26ef9ab52d2f1de12403b810fc8252bf7d478df91b3cddf11'
             'SKIP'
             '993a3096c2b113e6800f2abbd5d4233ebf1a97eef423990d3187d665d3490b92'
@@ -38,6 +33,7 @@ build() {
   cd "$pkgbase-$pkgver"
 
   ./configure --prefix=/usr \
+              --disable-chfn-chsh \
               --libdir=/usr/lib \
               --bindir=/usr/bin \
               --localstatedir=/run \
@@ -69,17 +65,17 @@ package_util-linux() {
   make DESTDIR="$pkgdir" install
 
   # setuid chfn and chsh
-  chmod 4755 "$pkgdir"/usr/bin/{newgrp,ch{sh,fn}}
+  #chmod 4755 "$pkgdir"/usr/bin/{newgrp,ch{sh,fn}}
 
   # install PAM files for login-utils
-  install -Dm644 "$srcdir/pam-common" "$pkgdir/etc/pam.d/chfn"
-  install -m644 "$srcdir/pam-common" "$pkgdir/etc/pam.d/chsh"
-  install -m644 "$srcdir/pam-login" "$pkgdir/etc/pam.d/login"
-  install -m644 "$srcdir/pam-su" "$pkgdir/etc/pam.d/su"
-  install -m644 "$srcdir/pam-su" "$pkgdir/etc/pam.d/su-l"
+  #install -Dm644 "$srcdir/pam-common" "$pkgdir/etc/pam.d/chfn"
+  #install -m644 "$srcdir/pam-common" "$pkgdir/etc/pam.d/chsh"
+  #install -m644 "$srcdir/pam-login" "$pkgdir/etc/pam.d/login"
+  #install -m644 "$srcdir/pam-su" "$pkgdir/etc/pam.d/su"
+  #install -m644 "$srcdir/pam-su" "$pkgdir/etc/pam.d/su-l"
 
   # TODO(dreisner): offer this upstream?
-  sed -i '/ListenStream/ aRuntimeDirectory=uuidd' "$pkgdir/usr/lib/systemd/system/uuidd.socket"
+  #sed -i '/ListenStream/ aRuntimeDirectory=uuidd' "$pkgdir/usr/lib/systemd/system/uuidd.socket"
 
   # adjust for usrmove
   # TODO(dreisner): fix configure.ac upstream so that this isn't needed
@@ -91,16 +87,16 @@ package_util-linux() {
   rm "$pkgdir"/usr/lib/lib*.{a,so}*
 
   ### install systemd-sysusers
-  install -Dm644 "$srcdir/util-linux.sysusers" \
-    "$pkgdir/usr/lib/sysusers.d/util-linux.conf"
+  #install -Dm644 "$srcdir/util-linux.sysusers" \
+  #  "$pkgdir/usr/lib/sysusers.d/util-linux.conf"
 
-  install -Dm644 "$srcdir/60-rfkill.rules" \
-    "$pkgdir/usr/lib/udev/rules.d/60-rfkill.rules"
+  #install -Dm644 "$srcdir/60-rfkill.rules" \
+  #  "$pkgdir/usr/lib/udev/rules.d/60-rfkill.rules"
 
-  install -Dm644 "$srcdir/rfkill-unblock_.service" \
-    "$pkgdir/usr/lib/systemd/system/rfkill-unblock@.service"
-  install -Dm644 "$srcdir/rfkill-block_.service" \
-    "$pkgdir/usr/lib/systemd/system/rfkill-block@.service"
+  #install -Dm644 "$srcdir/rfkill-unblock_.service" \
+  #  "$pkgdir/usr/lib/systemd/system/rfkill-unblock@.service"
+  #install -Dm644 "$srcdir/rfkill-block_.service" \
+  #  "$pkgdir/usr/lib/systemd/system/rfkill-block@.service"
 }
 
 package_libutil-linux() {

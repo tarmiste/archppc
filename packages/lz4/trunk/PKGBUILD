@@ -25,8 +25,8 @@ build() {
 
 check() {
   rm -f passwd.lz4
-  $pkgname/programs/lz4 /etc/passwd passwd.lz4
-  $pkgname/programs/lz4 -d passwd.lz4 passwd
+  $pkgname-${pkgver}/programs/lz4 /etc/passwd passwd.lz4
+  $pkgname-${pkgver}/programs/lz4 -d passwd.lz4 passwd
   diff -q /etc/passwd passwd
   rm passwd
 }
