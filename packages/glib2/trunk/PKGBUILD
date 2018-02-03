@@ -2,8 +2,9 @@
 # Maintainer: Jan de Groot <jgc@archlinux.org>
 
 pkgbase=glib2
-pkgname=(glib2 glib2-docs)
-pkgver=2.54.3+2+g94b38beff
+#pkgname=(glib2 glib2-docs)
+pkgname=(glib2)
+pkgver=2.52.3
 pkgrel=1
 pkgdesc="Low level core library"
 url="https://wiki.gnome.org/Projects/GLib"
@@ -16,7 +17,7 @@ optdepends=('python: for gdbus-codegen and gtester-report'
             'libelf: gresource inspection tool')
 options=(!emptydirs)
 _commit=94b38beff1347ec4a733199f7a7abdacaa958678  # glib-2-54
-source=("git+https://git.gnome.org/browse/glib#commit=$_commit"
+source=("http://ftp.gnome.org/pub/gnome/sources/glib/2.52/glib-2.52.3.tar.xz"
         noisy-glib-compile-schemas.diff
         glib-compile-schemas.hook gio-querymodules.hook)
 sha256sums=('SKIP'
@@ -24,43 +25,43 @@ sha256sums=('SKIP'
             'e1123a5d85d2445faac33f6dae1085fdd620d83279a4e130a83fe38db52b62b3'
             '5ba204a2686304b1454d401a39a9d27d09dd25e4529664e3fd565be3d439f8b6')
 
-pkgver() {
-  cd glib
-  git describe --tags | sed 's/-/+/g'
-}
+#pkgver() {
+#  cd glib-2.52.3
+#  git describe --tags | sed 's/-/+/g'
+#}
 
 prepare() {
-  cd glib
+  cd glib-2.52.3
 
   # Suppress noise from glib-compile-schemas.hook
-  patch -Np1 -i ../noisy-glib-compile-schemas.diff
+  #patch -Np1 -i ../noisy-glib-compile-schemas.diff
 
-  NOCONFIGURE=1 ./autogen.sh
+  #NOCONFIGURE=1 ./autogen.sh
 }
 
+# --enable-gtk-doc \
 build() {
-  cd glib
+  cd glib-2.52.3
   ./configure \
     --prefix=/usr \
     --libdir=/usr/lib \
     --sysconfdir=/etc \
     --with-pcre=system \
     --enable-debug=yes \
-    --enable-gtk-doc \
     --disable-fam
   sed -i -e 's/ -shared / -Wl,-O1,--as-needed\0/g' libtool
   make
 }
 
 check() {
-  cd glib
+  cd glib-2.52.3
   make check
 }
 
 package_glib2() {
-  cd glib
+  cd glib-2.52.3
   make DESTDIR="$pkgdir" install
-  mv "$pkgdir/usr/share/gtk-doc" "$srcdir"
+  #mv "$pkgdir/usr/share/gtk-doc" "$srcdir"
 
   install -Dt "$pkgdir/usr/share/libalpm/hooks" -m644 ../*.hook
 }
