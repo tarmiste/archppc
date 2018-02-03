@@ -3,22 +3,22 @@
 
 pkgname=lz4
 epoch=1
-pkgver=1.8.0
+pkgver=1.8.1.2
 pkgrel=1
 pkgdesc='Extremely fast compression algorithm'
 arch=('x86_64')
 url='http://www.lz4.org/'
 license=('GPL2')
-makedepends=('git')
+#makedepends=('git')
 checkdepends=('diffutils')
 depends=('glibc')
-source=("git+https://github.com/lz4/lz4.git#tag=v$pkgver")
+source=("https://github.com/lz4/lz4/releases/${pkgname}-${pkgver}.tar.gz")
 md5sums=('SKIP')
 
 build() {
   # do not use the main makefile, it calls sub make with -e
   # exported CLFAGS by makepkg break the version. see FS#50071
-  cd $pkgname
+  cd ${pkgname}-${pkgver}
   make -C lib PREFIX=/usr
   make -C programs PREFIX=/usr lz4 lz4c
 }
@@ -32,7 +32,7 @@ check() {
 }
 
 package() {
-  cd $pkgname
+  cd ${pkgname}-${pkgver}
   # mandir is broken since 1.8.0
   make install PREFIX=/usr MANDIR=/usr/share/man/man1 DESTDIR="$pkgdir"
 }
